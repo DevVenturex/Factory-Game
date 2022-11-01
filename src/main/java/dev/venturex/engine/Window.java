@@ -2,6 +2,8 @@ package dev.venturex.engine;
 
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.inputs.MouseHandler;
+import dev.venturex.engine.util.Time;
+import dev.venturex.scenes.LevelEditorScene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -23,10 +25,23 @@ public class Window {
     private String title;
     private long glfwWindow;
 
+    private static Scene currentScene = null;
+
+    public float r, g, b, a;
+
     private Window(){
         this.width = 1200;
         this.height = 1080;
         this.title = "Factory Game";
+        r = 1;
+        g = 1;
+        b = 1;
+        a = 1;
+    }
+
+    public static void changeToScene(Scene scene){
+        currentScene = scene;
+        currentScene.init();
     }
 
     public static Window get(){
@@ -108,20 +123,34 @@ public class Window {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+
+        Window.changeToScene(new LevelEditorScene());
     }
 
     private void loop(){
+        float beginTime = Time.getTime();
+        float endTime;
+        float deltaTime = -1f;
+
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
-            glClearColor(1.0f, 0.0f, 0.0f, 0.0f); // Set the clear color
+
+            glClearColor(r, g, b, a); // Set the clear color
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+            if (deltaTime >= 0)
+                currentScene.update(deltaTime);
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+
+            endTime = Time.getTime();
+            deltaTime = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 }

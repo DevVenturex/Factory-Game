@@ -1,0 +1,38 @@
+$root: Node{
+    name:"LevelEditor",
+    script:"LevelEditorScene",
+    children: {
+        RigidBody {
+            name:"Player",
+            script:"player/Player.java",
+            scriptVariables {
+                [float] "speed" = 500,
+                [float] "gravity" = 9.8,
+            },
+            transform{
+                position: [60.0, 55.0],
+                rotation: [0.0],
+                scale: [1.0, 1.0]
+            },
+            children: {
+                TexturedMesh {
+                    name:"TexturedMesh",
+                    texture:"&/res/textures/Player.png",
+                    shader:"&/res/shaders/PlayerTexture.glsl",
+                }
+            }
+        },
+        &Player{
+            path:"player/Player.scn",
+            scriptVariables {
+                [float] "speed" = 500,
+                [float] "gravity" = 9.8,
+            },
+            transform {
+                position: [60.0, 55.0],
+                rotation: [0.0],
+                scale: [1.0, 1.0]
+            },
+        }
+    }
+}
