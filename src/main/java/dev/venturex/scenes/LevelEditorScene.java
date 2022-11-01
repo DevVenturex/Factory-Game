@@ -1,15 +1,17 @@
 package dev.venturex.scenes;
 
+import dev.venturex.engine.Camera;
 import dev.venturex.engine.Scene;
 import dev.venturex.engine.Window;
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.renderer.Shader;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
@@ -42,11 +44,11 @@ public class LevelEditorScene extends Scene {
             "}\n";
 
     private float vertices[] = {
-            // position               // color
-             0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
-            -0.5f,  0.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
-             0.5f,  0.5f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
-            -0.5f, -0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
+            // position                     // color
+            100.5f,   0.5f, 0.0f,          1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
+              0.5f, 100.5f, 0.0f,          0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
+            100.5f, 100.5f, 0.0f,          1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
+              0.5f,   0.5f, 0.0f,          1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
     };
 
     private int indices[] = {
@@ -64,6 +66,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        this.cam = new Camera(new Vector2f());
         System.out.println("LevelEditorScene");
         shader = new Shader("res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
 
@@ -96,6 +99,9 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(float deltaTime) {
         shader.bind();
+        shader.setMat4f("uProjection", cam.getProjectionMatrix());
+        shader.setMat4f("uView", cam.getViewMatrix());
+
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
