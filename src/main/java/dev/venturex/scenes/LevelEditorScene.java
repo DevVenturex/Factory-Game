@@ -3,6 +3,7 @@ package dev.venturex.scenes;
 import dev.venturex.engine.Scene;
 import dev.venturex.engine.Window;
 import dev.venturex.engine.inputs.KeyboardHandler;
+import dev.venturex.engine.renderer.Shader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -40,8 +41,6 @@ public class LevelEditorScene extends Scene {
             "    color = fColor;\n" +
             "}\n";
 
-    private int vertexId, fragmentId, programId;
-
     private float vertices[] = {
             // position               // color
              0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
@@ -61,29 +60,12 @@ public class LevelEditorScene extends Scene {
     };
 
     private int vaoId, vboId, eboId;
+    private Shader shader;
 
     @Override
     public void init() {
         System.out.println("LevelEditorScene");
-
-        vertexId = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexId, vertexSource);
-        glCompileShader(vertexId);
-        if (glGetShaderi(vertexId, GL_COMPILE_STATUS) == 0)
-            throw new RuntimeException("Error compiling vertex shader code: " + glGetShaderInfoLog(vertexId, 1024));
-
-        fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentId, fragmentSource);
-        glCompileShader(fragmentId);
-        if (glGetShaderi(fragmentId, GL_COMPILE_STATUS) == 0)
-            throw new RuntimeException("Error compiling fragment shader code: " + glGetShaderInfoLog(fragmentId, 1024));
-
-        programId = glCreateProgram();
-        glAttachShader(programId, vertexId);
-        glAttachShader(programId, fragmentId);
-        glLinkProgram(programId);
-        if (glGetProgrami(programId, GL_LINK_STATUS) == 0)
-            throw new RuntimeException("Error linking shader program: " + glGetProgramInfoLog(programId, 1024));
+        shader = new Shader("res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
 
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
@@ -113,7 +95,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float deltaTime) {
-        glUseProgram(programId);
+        shader.bind();
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -124,6 +106,6 @@ public class LevelEditorScene extends Scene {
         glDisableVertexAttribArray(1);
 
         glBindVertexArray(0);
-        glUseProgram(0);
+        shader.unbind();
     }
 }

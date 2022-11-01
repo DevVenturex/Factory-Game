@@ -33,9 +33,9 @@ public class Window {
         this.width = 1200;
         this.height = 1080;
         this.title = "Factory Game";
-        r = 1;
-        g = 1;
-        b = 1;
+        r = .1f;
+        g = .1f;
+        b = .1f;
         a = 1;
     }
 
@@ -84,6 +84,10 @@ public class Window {
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if ( glfwWindow == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
+
+        glfwSetFramebufferSizeCallback(glfwWindow, (window, width, height) -> {
+           glViewport(0, 0, width, height);
+        });
 
         glfwSetKeyCallback(glfwWindow, KeyboardHandler::keyCallback);
         glfwSetCursorPosCallback(glfwWindow, MouseHandler::mousePosCallback);
