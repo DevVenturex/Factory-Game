@@ -5,6 +5,7 @@ import dev.venturex.engine.Scene;
 import dev.venturex.engine.Window;
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.renderer.Shader;
+import dev.venturex.engine.renderer.Texture;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
@@ -18,37 +19,12 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class LevelEditorScene extends Scene {
 
-    private String vertexSource =
-            "#version 330 core\n" +
-            "\n" +
-            "layout (location = 0) in vec3 aPos;\n" +
-            "layout (location = 1) in vec4 aColor;\n" +
-            "\n" +
-            "out vec4 fColor;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "    fColor = aColor;\n" +
-            "    gl_Position = vec4(aPos, 1.0);\n" +
-            "}";
-
-    private String fragmentSource =
-            "#version 330 core\n" +
-            "\n" +
-            "in vec4 fColor;\n" +
-            "\n" +
-            "out vec4 color;\n" +
-            "\n" +
-            "void main() {\n" +
-            "    color = fColor;\n" +
-            "}\n";
-
     private float vertices[] = {
-            // position                     // color
-            100.5f,   0.5f, 0.0f,          1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
-              0.5f, 100.5f, 0.0f,          0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
-            100.5f, 100.5f, 0.0f,          1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
-              0.5f,   0.5f, 0.0f,          1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
+            // position                     // color                        // UV Coordinates
+            100.5f,   0.5f, 0.0f,           1.0f, 1.0f, 1.0f, 1.0f,         1, 0, // Bottom right 0
+              0.5f, 100.5f, 0.0f,           1.0f, 1.0f, 1.0f, 1.0f,         0, 1, // Top left     1
+            100.5f, 100.5f, 0.0f,           1.0f, 1.0f, 1.0f, 1.0f,         1, 1, // Top right    2
+              0.5f,   0.5f, 0.0f,           1.0f, 1.0f, 1.0f, 1.0f,         0, 0 // Bottom left  3
     };
 
     private int indices[] = {
@@ -63,12 +39,14 @@ public class LevelEditorScene extends Scene {
 
     private int vaoId, vboId, eboId;
     private Shader shader;
+    private Texture texture;
 
     @Override
     public void init() {
         this.cam = new Camera(new Vector2f());
         System.out.println("LevelEditorScene");
         shader = new Shader("res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
+        texture = new Texture("res/assets/textures/smile.png");
 
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
@@ -87,18 +65,26 @@ public class LevelEditorScene extends Scene {
 
         int positionsSize = 3;
         int colorSize = 4;
-        int floatSizeBytes = 4;
-        int vertexSizeBytes = (positionsSize + colorSize) * Float.BYTES;
+        int uvSize = 2;
+        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
         glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * floatSizeBytes);
+        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
     }
 
     @Override
     public void update(float deltaTime) {
         shader.bind();
+
+        shader.uploadTexture("texSampler", 0);
+        glActiveTexture(GL_TEXTURE0);
+        texture.bind();
+
         shader.setMat4f("uProjection", cam.getProjectionMatrix());
         shader.setMat4f("uView", cam.getViewMatrix());
 
