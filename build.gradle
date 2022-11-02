@@ -2,12 +2,23 @@ plugins {
     id 'java'
 }
 
+import org.gradle.internal.os.OperatingSystem;
+
 group 'dev.venturex'
 version '1.0-SNAPSHOT'
 
 project.ext.lwjglVersion = "3.3.1"
 project.ext.jomlVersion = "1.10.5"
-project.ext.lwjglNatives = "natives-windows"
+
+if (OperatingSystem.current().isLinux())
+{
+    project.ext.lwjglNatives = "natives-linux"
+}
+else if (OperatingSystem.current().isWindows())
+{
+    project.ext.lwjglNatives = "natives-windows"
+}
+
 
 repositories {
     mavenCentral()
