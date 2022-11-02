@@ -5,9 +5,12 @@ import dev.venturex.engine.Camera;
 import dev.venturex.engine.GameObject;
 import dev.venturex.engine.Scene;
 import dev.venturex.engine.Transform;
+import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.util.AssetPool;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class LevelEditorScene extends Scene {
 
@@ -15,24 +18,13 @@ public class LevelEditorScene extends Scene {
     public void init() {
         this.cam = new Camera(new Vector2f());
 
-        int xOffset = 10;
-        int yOffset = 10;
+        GameObject obj1 = new GameObject("Object 1", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
+        obj1.addComponent(new SpriteRenderer(AssetPool.getTexture("res/assets/textures/testImage.png")));
+        this.addGameObject(obj1);
 
-        float totalWidth = (float)(600 - xOffset * 2);
-        float totalHeight = (float)(300 - yOffset * 2);
-        float sizeX = totalWidth / 100.0f;
-        float sizeY = totalHeight / 100.0f;
-
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
-                float xPos = xOffset + (x * sizeX);
-                float yPos = yOffset + (y * sizeY);
-
-                GameObject go = new GameObject("Obj" + x + "" + y, new Transform(new Vector2f(xPos, yPos), new Vector2f(sizeX, sizeY)));
-                go.addComponent(new SpriteRenderer(new Vector4f(xPos / totalWidth, yPos / totalHeight, 1, 1)));
-                this.addGameObject(go);
-            }
-        }
+        GameObject obj2 = new GameObject("Object 2", new Transform(new Vector2f(400, 100), new Vector2f(256, 256)));
+        obj2.addComponent(new SpriteRenderer(AssetPool.getTexture("res/assets/textures/testImage2.png")));
+        this.addGameObject(obj2);
 
         loadResources();
     }
@@ -43,6 +35,18 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float deltaTime) {
+        if (KeyboardHandler.isKeyPressed(GLFW_KEY_RIGHT)){
+            cam.position.x += 100f * deltaTime;
+        } else if (KeyboardHandler.isKeyPressed(GLFW_KEY_LEFT)){
+            cam.position.x -= 100f * deltaTime;
+        }
+
+        if (KeyboardHandler.isKeyPressed(GLFW_KEY_UP)){
+            cam.position.y += 100f * deltaTime;
+        } else if (KeyboardHandler.isKeyPressed(GLFW_KEY_DOWN)){
+            cam.position.y -= 100f * deltaTime;
+        }
+
         for (GameObject go : this.gameObjects){
             go.update(deltaTime);
         }

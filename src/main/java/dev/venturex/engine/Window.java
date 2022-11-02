@@ -2,7 +2,6 @@ package dev.venturex.engine;
 
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.inputs.MouseHandler;
-import dev.venturex.engine.util.Time;
 import dev.venturex.scenes.LevelEditorScene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -137,7 +136,7 @@ public class Window {
     }
 
     private void loop(){
-        float beginTime = Time.getTime();
+        float beginTime = (float)glfwGetTime();
         float endTime;
         float deltaTime = -1f;
 
@@ -160,7 +159,7 @@ public class Window {
             // invoked during this call.
             glfwPollEvents();
 
-            endTime = Time.getTime();
+            endTime = (float)glfwGetTime();
             deltaTime = endTime - beginTime;
             beginTime = endTime;
         }
