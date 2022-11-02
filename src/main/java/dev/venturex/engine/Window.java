@@ -51,6 +51,10 @@ public class Window {
         return Window.window;
     }
 
+    public static Scene getScene() {
+        return get().currentScene;
+    }
+
     public void run(){
         System.out.println("LWJGL Version: " + Version.getVersion());
 
@@ -144,8 +148,11 @@ public class Window {
             glClearColor(r, g, b, a); // Set the clear color
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            if (deltaTime >= 0)
+            if (deltaTime >= 0) {
+                int fps = (int) (1 / deltaTime);
+                glfwSetWindowTitle(glfwWindow, title + " || FPS: " + fps);
                 currentScene.update(deltaTime);
+            }
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
 
