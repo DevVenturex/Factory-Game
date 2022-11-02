@@ -42,6 +42,7 @@ public class Window {
     public static void changeToScene(Scene scene){
         currentScene = scene;
         currentScene.init();
+        currentScene.start();
     }
 
     public static Window get(){

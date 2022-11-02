@@ -1,6 +1,8 @@
 package dev.venturex.scenes;
 
+import dev.venturex.components.SpriteRenderer;
 import dev.venturex.engine.Camera;
+import dev.venturex.engine.GameObject;
 import dev.venturex.engine.Scene;
 import dev.venturex.engine.Window;
 import dev.venturex.engine.inputs.KeyboardHandler;
@@ -41,8 +43,14 @@ public class LevelEditorScene extends Scene {
     private Shader shader;
     private Texture texture;
 
+    GameObject gameObj;
+
     @Override
     public void init() {
+        this.gameObj = new GameObject("Game Object");
+        this.gameObj.addComponent(new SpriteRenderer());
+        this.addGameObject(this.gameObj);
+
         this.cam = new Camera(new Vector2f());
         System.out.println("LevelEditorScene");
         shader = new Shader("res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
@@ -99,5 +107,9 @@ public class LevelEditorScene extends Scene {
 
         glBindVertexArray(0);
         shader.unbind();
+
+        for (GameObject go : this.gameObjects){
+            go.update(deltaTime);
+        }
     }
 }
