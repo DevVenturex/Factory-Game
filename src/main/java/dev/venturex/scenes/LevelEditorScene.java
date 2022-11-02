@@ -1,6 +1,8 @@
 package dev.venturex.scenes;
 
+import dev.venturex.components.Sprite;
 import dev.venturex.components.SpriteRenderer;
+import dev.venturex.components.SpriteSheet;
 import dev.venturex.engine.Camera;
 import dev.venturex.engine.GameObject;
 import dev.venturex.engine.Scene;
@@ -16,21 +18,27 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        loadResources();
+
         this.cam = new Camera(new Vector2f());
 
-        GameObject obj1 = new GameObject("Object 1", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
-        obj1.addComponent(new SpriteRenderer(AssetPool.getTexture("res/assets/textures/testImage.png")));
+        SpriteSheet spriteSheet = AssetPool.getSpriteSheet("res/assets/textures/spritesheet.png");
+
+        GameObject obj1 = new GameObject("Mario", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
+        obj1.addComponent(new SpriteRenderer(spriteSheet.getSprite(0)));
         this.addGameObject(obj1);
 
-        GameObject obj2 = new GameObject("Object 2", new Transform(new Vector2f(400, 100), new Vector2f(256, 256)));
-        obj2.addComponent(new SpriteRenderer(AssetPool.getTexture("res/assets/textures/testImage2.png")));
+        GameObject obj2 = new GameObject("Goomba", new Transform(new Vector2f(400, 100), new Vector2f(256, 256)));
+        obj2.addComponent(new SpriteRenderer(spriteSheet.getSprite(10)));
         this.addGameObject(obj2);
 
-        loadResources();
     }
 
     private void loadResources(){
         AssetPool.getShader("DefaultShader", "res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
+        AssetPool.addSpriteSheet("res/assets/textures/spritesheet.png",
+                new SpriteSheet(AssetPool.getTexture("res/assets/textures/spritesheet.png"),
+                        16, 16, 26, 0, 0));
     }
 
     @Override

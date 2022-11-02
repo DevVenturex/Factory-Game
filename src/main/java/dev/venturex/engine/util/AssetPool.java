@@ -1,5 +1,6 @@
 package dev.venturex.engine.util;
 
+import dev.venturex.components.SpriteSheet;
 import dev.venturex.engine.renderer.Shader;
 import dev.venturex.engine.renderer.Texture;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 public class AssetPool {
     private static Map<String, Shader> shaders = new HashMap<>();
     private static Map<String, Texture> textures = new HashMap<>();
+    private static Map<String, SpriteSheet> sheets = new HashMap<>();
 
     public static Shader getShader(String shaderName, String resourceName1, String resourceName2){
         File file1 = new File(resourceName1);
@@ -32,5 +34,19 @@ public class AssetPool {
             AssetPool.textures.put(file.getAbsolutePath(), texture);
             return texture;
         }
+    }
+
+    public static void addSpriteSheet(String resourceName, SpriteSheet sheet){
+        File file = new File(resourceName);
+        if (!AssetPool.sheets.containsKey(file.getAbsolutePath())){
+            AssetPool.sheets.put(file.getAbsolutePath(), sheet);
+        }
+    }
+
+    public static SpriteSheet getSpriteSheet(String resourceName){
+        File file = new File(resourceName);
+        if (!AssetPool.sheets.containsKey(file.getAbsolutePath()))
+            throw new RuntimeException("Error: Tried to access SpriteSheet '" + resourceName + "' and it has not been added to asset pool.");
+        return AssetPool.sheets.getOrDefault(file.getAbsolutePath(), null);
     }
 }
