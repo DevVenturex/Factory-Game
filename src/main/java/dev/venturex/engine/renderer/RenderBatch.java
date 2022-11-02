@@ -2,6 +2,7 @@ package dev.venturex.engine.renderer;
 
 import dev.venturex.components.SpriteRenderer;
 import dev.venturex.engine.Window;
+import dev.venturex.engine.util.AssetPool;
 import org.joml.Vector4f;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -35,7 +36,7 @@ public class RenderBatch {
 
     public RenderBatch(int maxBatchSize){
         this.maxBatchSize = maxBatchSize;
-        shader = new Shader("res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
+        shader = AssetPool.getShader("DefaultShader", "res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
         this.sprites = new SpriteRenderer[maxBatchSize];
 
         vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];

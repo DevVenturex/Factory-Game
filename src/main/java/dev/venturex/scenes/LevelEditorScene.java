@@ -5,6 +5,7 @@ import dev.venturex.engine.Camera;
 import dev.venturex.engine.GameObject;
 import dev.venturex.engine.Scene;
 import dev.venturex.engine.Transform;
+import dev.venturex.engine.util.AssetPool;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -32,6 +33,12 @@ public class LevelEditorScene extends Scene {
                 this.addGameObject(go);
             }
         }
+
+        loadResources();
+    }
+
+    private void loadResources(){
+        AssetPool.getShader("DefaultShader", "res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
     }
 
     @Override
