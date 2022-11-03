@@ -9,23 +9,31 @@ version '1.0-SNAPSHOT'
 
 project.ext.lwjglVersion = "3.3.1"
 project.ext.jomlVersion = "1.10.5"
+project.ext.imguiVersion = '1.76-0.9'
 
 if (OperatingSystem.current().isLinux())
 {
     project.ext.lwjglNatives = "natives-linux"
+    project.ext.imguiNatives = "natives-linux"
 }
 else if (OperatingSystem.current().isWindows())
 {
     project.ext.lwjglNatives = "natives-windows"
+    project.ext.imguiNatives = "natives-windows"
 }
 
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
 dependencies {
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    implementation "io.imgui.java:binding:$imguiVersion"
+    implementation "io.imgui.java:lwjgl3:$imguiVersion"
+
+    runtimeOnly "io.imgui.java:$imguiNatives:$imguiVersion"
 
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-assimp"

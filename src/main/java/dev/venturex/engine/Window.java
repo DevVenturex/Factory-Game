@@ -3,6 +3,7 @@ package dev.venturex.engine;
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.inputs.MouseHandler;
 import dev.venturex.scenes.GameScene;
+import dev.venturex.scenes.MenuScene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -22,13 +23,14 @@ public class Window {
     static Window window;
     private static Scene currentScene = null;
     public float r, g, b, a;
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
     private final String title;
     private long glfwWindow;
+    private ImGuiLayer imGuiLayer;
 
     private Window() {
-        this.width = 1200;
+        this.width = 1920;
         this.height = 1080;
         this.title = "Factory Game";
         r = .1f;
@@ -89,6 +91,8 @@ public class Window {
             throw new RuntimeException("Failed to create the GLFW window");
 
         glfwSetFramebufferSizeCallback(glfwWindow, (window, width, height) -> {
+            this.width = width;
+            this.height = height;
             glViewport(0, 0, width, height);
         });
 
@@ -134,6 +138,9 @@ public class Window {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
+        this.imGuiLayer = new ImGuiLayer(glfwWindow);
+        this.imGuiLayer.initImGui();
+
         Window.changeToScene(new GameScene());
     }
 
@@ -155,6 +162,8 @@ public class Window {
                 currentScene.update(deltaTime);
             }
 
+            this.imGuiLayer.update(deltaTime);
+
             glfwSwapBuffers(glfwWindow); // swap the color buffers
 
             // Poll for window events. The key callback above will only be
@@ -165,5 +174,13 @@ public class Window {
             deltaTime = endTime - beginTime;
             beginTime = endTime;
         }
+    }
+
+    public static int getWidth() {
+        return get().width;
+    }
+
+    public static int getHeight() {
+        return get().height;
     }
 }
