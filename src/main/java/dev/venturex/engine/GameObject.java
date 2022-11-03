@@ -5,24 +5,34 @@ import java.util.List;
 
 public class GameObject {
 
-    private String name;
-    private List<Component> components;
+    private final String name;
+    private final List<Component> components;
+    private final int zIndex;
     public Transform transform;
 
     public GameObject(String name) {
         this.name = name;
         this.components = new ArrayList<>();
         this.transform = new Transform();
+        this.zIndex = 0;
     }
 
     public GameObject(String name, Transform transform) {
         this.name = name;
         this.components = new ArrayList<>();
         this.transform = transform;
+        this.zIndex = 0;
     }
 
-    public <T extends Component> T getComponent(Class<T> componentClass){
-        for (Component c : components){
+    public GameObject(String name, Transform transform, int zIndex) {
+        this.name = name;
+        this.components = new ArrayList<>();
+        this.transform = transform;
+        this.zIndex = zIndex;
+    }
+
+    public <T extends Component> T getComponent(Class<T> componentClass) {
+        for (Component c : components) {
             if (componentClass.isAssignableFrom(c.getClass()))
                 try {
                     return componentClass.cast(c);
@@ -33,7 +43,7 @@ public class GameObject {
         return null;
     }
 
-    public <T extends Component> void removeComponent(Class<T> componentClass){
+    public <T extends Component> void removeComponent(Class<T> componentClass) {
         for (int i = 0; i < components.size(); i++) {
             Component c = components.get(i);
             if (componentClass.isAssignableFrom(c.getClass())) {
@@ -43,20 +53,24 @@ public class GameObject {
         }
     }
 
-    public void addComponent(Component c){
+    public void addComponent(Component c) {
         this.components.add(c);
         c.gameObject = this;
     }
 
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
         for (int i = 0; i < components.size(); i++) {
             components.get(i).update(deltaTime);
         }
     }
 
-    public void init(){
+    public void init() {
         for (int i = 0; i < components.size(); i++) {
             components.get(i).init();
         }
+    }
+
+    public int zIndex() {
+        return zIndex;
     }
 }

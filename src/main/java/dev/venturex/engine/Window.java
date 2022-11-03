@@ -2,7 +2,7 @@ package dev.venturex.engine;
 
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.inputs.MouseHandler;
-import dev.venturex.scenes.LevelEditorScene;
+import dev.venturex.scenes.GameScene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -20,15 +20,14 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
 
     static Window window;
-    private int width, height;
-    private String title;
+    private static Scene currentScene = null;
+    public float r, g, b, a;
+    private final int width;
+    private final int height;
+    private final String title;
     private long glfwWindow;
 
-    private static Scene currentScene = null;
-
-    public float r, g, b, a;
-
-    private Window(){
+    private Window() {
         this.width = 1200;
         this.height = 1080;
         this.title = "Factory Game";
@@ -38,13 +37,13 @@ public class Window {
         a = 1;
     }
 
-    public static void changeToScene(Scene scene){
+    public static void changeToScene(Scene scene) {
         currentScene = scene;
         currentScene.init();
         currentScene.start();
     }
 
-    public static Window get(){
+    public static Window get() {
         if (Window.window == null)
             Window.window = new Window();
         return Window.window;
@@ -54,7 +53,7 @@ public class Window {
         return get().currentScene;
     }
 
-    public void run(){
+    public void run() {
         System.out.println("LWJGL Version: " + Version.getVersion());
 
         init();
@@ -69,13 +68,13 @@ public class Window {
         glfwSetErrorCallback(null).free();
     }
 
-    private void init(){
+    private void init() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
@@ -86,11 +85,11 @@ public class Window {
 
         // Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
-        if ( glfwWindow == NULL )
+        if (glfwWindow == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
         glfwSetFramebufferSizeCallback(glfwWindow, (window, width, height) -> {
-           glViewport(0, 0, width, height);
+            glViewport(0, 0, width, height);
         });
 
         glfwSetKeyCallback(glfwWindow, KeyboardHandler::keyCallback);
@@ -99,7 +98,7 @@ public class Window {
         glfwSetScrollCallback(glfwWindow, MouseHandler::mouseScrollCallback);
 
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -132,17 +131,20 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
-        Window.changeToScene(new LevelEditorScene());
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+        Window.changeToScene(new GameScene());
     }
 
-    private void loop(){
-        float beginTime = (float)glfwGetTime();
+    private void loop() {
+        float beginTime = (float) glfwGetTime();
         float endTime;
         float deltaTime = -1f;
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
-        while ( !glfwWindowShouldClose(glfwWindow) ) {
+        while (!glfwWindowShouldClose(glfwWindow)) {
 
             glClearColor(r, g, b, a); // Set the clear color
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
@@ -159,7 +161,7 @@ public class Window {
             // invoked during this call.
             glfwPollEvents();
 
-            endTime = (float)glfwGetTime();
+            endTime = (float) glfwGetTime();
             deltaTime = endTime - beginTime;
             beginTime = endTime;
         }

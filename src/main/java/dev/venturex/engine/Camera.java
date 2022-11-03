@@ -5,8 +5,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Camera {
-    private Matrix4f projectionMatrix, viewMatrix;
     public Vector2f position;
+    private final Matrix4f projectionMatrix;
+    private final Matrix4f viewMatrix;
 
     public Camera(Vector2f position) {
         this.position = position;

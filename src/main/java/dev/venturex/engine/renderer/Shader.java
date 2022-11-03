@@ -9,13 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
 
 public class Shader {
 
-    private int vertexId, fragmentId, programId;
+    private final int vertexId;
+    private final int fragmentId;
+    private final int programId;
     private String vertexSource, fragmentSource;
-    public Shader(String vertexFile, String fragmentFile){
+
+    public Shader(String vertexFile, String fragmentFile) {
         try {
             vertexSource = new String(Files.readAllBytes(Paths.get(vertexFile)));
             fragmentSource = new String(Files.readAllBytes(Paths.get(fragmentFile)));
@@ -43,27 +45,27 @@ public class Shader {
             throw new RuntimeException("Error linking shader program: " + glGetProgramInfoLog(programId, 1024));
     }
 
-    public void bind(){
+    public void bind() {
         glUseProgram(programId);
     }
 
-    public void unbind(){
+    public void unbind() {
         glUseProgram(0);
     }
 
-    public void setMat4f(String varName, Matrix4f mat4){
+    public void setMat4f(String varName, Matrix4f mat4) {
         int varLocation = glGetUniformLocation(programId, varName);
         FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
         mat4.get(matBuffer);
         glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 
-    public void setTexture(String varName, int slot){
+    public void setTexture(String varName, int slot) {
         int varLocation = glGetUniformLocation(programId, varName);
         glUniform1i(varLocation, slot);
     }
 
-    public void setIntArray(String varName, int[] array){
+    public void setIntArray(String varName, int[] array) {
         int varLocation = glGetUniformLocation(programId, varName);
         bind();
         glUniform1iv(varLocation, array);

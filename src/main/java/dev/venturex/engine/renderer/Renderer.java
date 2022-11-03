@@ -1,31 +1,31 @@
 package dev.venturex.engine.renderer;
 
 import dev.venturex.components.SpriteRenderer;
-import dev.venturex.engine.Component;
 import dev.venturex.engine.GameObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Renderer {
     private final int MAX_BATCH_SIZE = 10000;
-    private List<RenderBatch> batches;
+    private final List<RenderBatch> batches;
 
     public Renderer() {
         this.batches = new ArrayList<>();
     }
 
-    public void add(GameObject obj){
+    public void add(GameObject obj) {
         SpriteRenderer sprite = obj.getComponent(SpriteRenderer.class);
-        if (sprite != null){
+        if (sprite != null) {
             add(sprite);
         }
     }
 
-    public void add(SpriteRenderer sprite){
+    public void add(SpriteRenderer sprite) {
         boolean added = false;
         for (RenderBatch batch : batches) {
-            if (batch.hasRoom()) {
+            if (batch.hasRoom() && batch.zIndex() == sprite.gameObject.zIndex()) {
                 Texture texture = sprite.getTexture();
                 if (texture == null || (batch.hasTexture(texture) || batch.hasTextureRoom())) {
                     batch.addSprite(sprite);
@@ -34,16 +34,17 @@ public class Renderer {
                 }
             }
         }
-        if (!added){
-            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE);
+        if (!added) {
+            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, sprite.gameObject.zIndex());
             newBatch.init();
             batches.add(newBatch);
             newBatch.addSprite(sprite);
+            Collections.sort(batches);
         }
     }
 
-    public void render(){
-        for (RenderBatch batch : batches){
+    public void render() {
+        for (RenderBatch batch : batches) {
             batch.render();
         }
     }

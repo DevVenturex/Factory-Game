@@ -8,7 +8,7 @@ public class MouseHandler {
     private static MouseHandler instance;
     private double scrollX, scrollY;
     private double xPos, yPos, lastY, lastX;
-    private boolean mouseButtonPressed[] = new boolean[3];
+    private final boolean[] mouseButtonPressed = new boolean[3];
     private boolean isDragging;
 
     private MouseHandler() {
@@ -62,27 +62,27 @@ public class MouseHandler {
     }
 
     public static float getX() {
-        return (float)get().xPos;
+        return (float) get().xPos;
     }
 
     public static float getY() {
-        return (float)get().yPos;
+        return (float) get().yPos;
     }
 
     public static float getDx() {
-        return (float)(get().lastX - get().xPos);
+        return (float) (get().lastX - get().xPos);
     }
 
     public static float getDy() {
-        return (float)(get().lastY - get().yPos);
+        return (float) (get().lastY - get().yPos);
     }
 
     public static float getScrollX() {
-        return (float)get().scrollX;
+        return (float) get().scrollX;
     }
 
     public static float getScrollY() {
-        return (float)get().scrollY;
+        return (float) get().scrollY;
     }
 
     public static boolean isDragging() {

@@ -10,11 +10,13 @@ import dev.venturex.engine.Transform;
 import dev.venturex.engine.inputs.KeyboardHandler;
 import dev.venturex.engine.util.AssetPool;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class LevelEditorScene extends Scene {
+public class GameScene extends Scene {
+
+    private GameObject obj1;
+    private SpriteSheet sheet;
 
     @Override
     public void init() {
@@ -22,19 +24,19 @@ public class LevelEditorScene extends Scene {
 
         this.cam = new Camera(new Vector2f());
 
-        SpriteSheet spriteSheet = AssetPool.getSpriteSheet("res/assets/textures/spritesheet.png");
+        sheet = AssetPool.getSpriteSheet("res/assets/textures/spritesheet.png");
 
-        GameObject obj1 = new GameObject("Mario", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
-        obj1.addComponent(new SpriteRenderer(spriteSheet.getSprite(0)));
+        obj1 = new GameObject("Object 1", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
+        obj1.addComponent(new SpriteRenderer(new Sprite(AssetPool.getTexture("res/assets/textures/blendImage1.png"))));
         this.addGameObject(obj1);
 
-        GameObject obj2 = new GameObject("Goomba", new Transform(new Vector2f(400, 100), new Vector2f(256, 256)));
-        obj2.addComponent(new SpriteRenderer(spriteSheet.getSprite(10)));
+        GameObject obj2 = new GameObject("Object 2", new Transform(new Vector2f(300, 100), new Vector2f(256, 256)));
+        obj2.addComponent(new SpriteRenderer(new Sprite(AssetPool.getTexture("res/assets/textures/blendImage2.png"))));
         this.addGameObject(obj2);
 
     }
 
-    private void loadResources(){
+    private void loadResources() {
         AssetPool.getShader("DefaultShader", "res/assets/shaders/vDefault.glsl", "res/assets/shaders/fDefault.glsl");
         AssetPool.addSpriteSheet("res/assets/textures/spritesheet.png",
                 new SpriteSheet(AssetPool.getTexture("res/assets/textures/spritesheet.png"),
@@ -43,19 +45,19 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float deltaTime) {
-        if (KeyboardHandler.isKeyPressed(GLFW_KEY_RIGHT)){
+        if (KeyboardHandler.isKeyPressed(GLFW_KEY_RIGHT)) {
             cam.position.x += 100f * deltaTime;
-        } else if (KeyboardHandler.isKeyPressed(GLFW_KEY_LEFT)){
+        } else if (KeyboardHandler.isKeyPressed(GLFW_KEY_LEFT)) {
             cam.position.x -= 100f * deltaTime;
         }
 
-        if (KeyboardHandler.isKeyPressed(GLFW_KEY_UP)){
+        if (KeyboardHandler.isKeyPressed(GLFW_KEY_UP)) {
             cam.position.y += 100f * deltaTime;
-        } else if (KeyboardHandler.isKeyPressed(GLFW_KEY_DOWN)){
+        } else if (KeyboardHandler.isKeyPressed(GLFW_KEY_DOWN)) {
             cam.position.y -= 100f * deltaTime;
         }
 
-        for (GameObject go : this.gameObjects){
+        for (GameObject go : this.gameObjects) {
             go.update(deltaTime);
         }
 

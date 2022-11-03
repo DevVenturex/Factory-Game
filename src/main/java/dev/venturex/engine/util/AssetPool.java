@@ -9,14 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssetPool {
-    private static Map<String, Shader> shaders = new HashMap<>();
-    private static Map<String, Texture> textures = new HashMap<>();
-    private static Map<String, SpriteSheet> sheets = new HashMap<>();
+    private static final Map<String, Shader> shaders = new HashMap<>();
+    private static final Map<String, Texture> textures = new HashMap<>();
+    private static final Map<String, SpriteSheet> sheets = new HashMap<>();
 
-    public static Shader getShader(String shaderName, String resourceName1, String resourceName2){
+    public static Shader getShader(String shaderName, String resourceName1, String resourceName2) {
         File file1 = new File(resourceName1);
         File file2 = new File(resourceName2);
-        if (AssetPool.shaders.containsKey(shaderName)){
+        if (AssetPool.shaders.containsKey(shaderName)) {
             return AssetPool.shaders.get(shaderName);
         } else {
             Shader shader = new Shader(resourceName1, resourceName2);
@@ -25,9 +25,9 @@ public class AssetPool {
         }
     }
 
-    public static Texture getTexture(String resourceName){
+    public static Texture getTexture(String resourceName) {
         File file = new File(resourceName);
-        if (AssetPool.textures.containsKey(file.getAbsolutePath())){
+        if (AssetPool.textures.containsKey(file.getAbsolutePath())) {
             return AssetPool.textures.get(file.getAbsolutePath());
         } else {
             Texture texture = new Texture(resourceName);
@@ -36,14 +36,14 @@ public class AssetPool {
         }
     }
 
-    public static void addSpriteSheet(String resourceName, SpriteSheet sheet){
+    public static void addSpriteSheet(String resourceName, SpriteSheet sheet) {
         File file = new File(resourceName);
-        if (!AssetPool.sheets.containsKey(file.getAbsolutePath())){
+        if (!AssetPool.sheets.containsKey(file.getAbsolutePath())) {
             AssetPool.sheets.put(file.getAbsolutePath(), sheet);
         }
     }
 
-    public static SpriteSheet getSpriteSheet(String resourceName){
+    public static SpriteSheet getSpriteSheet(String resourceName) {
         File file = new File(resourceName);
         if (!AssetPool.sheets.containsKey(file.getAbsolutePath()))
             throw new RuntimeException("Error: Tried to access SpriteSheet '" + resourceName + "' and it has not been added to asset pool.");

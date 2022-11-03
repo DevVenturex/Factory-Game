@@ -1,6 +1,5 @@
 package dev.venturex.engine;
 
-import dev.venturex.components.SpriteRenderer;
 import dev.venturex.engine.renderer.Renderer;
 
 import java.util.ArrayList;
@@ -10,8 +9,8 @@ public abstract class Scene {
 
     protected Renderer renderer = new Renderer();
     protected Camera cam;
-    private boolean isRunning = false;
     protected List<GameObject> gameObjects;
+    private boolean isRunning = false;
 
     public Scene() {
         this.gameObjects = new ArrayList<>();
@@ -19,16 +18,16 @@ public abstract class Scene {
 
     public abstract void init();
 
-    public void start(){
-        for (GameObject go : gameObjects){
+    public void start() {
+        for (GameObject go : gameObjects) {
             go.init();
             this.renderer.add(go);
         }
         isRunning = true;
     }
 
-    public void addGameObject(GameObject go){
-        if (!isRunning){
+    public void addGameObject(GameObject go) {
+        if (!isRunning) {
             gameObjects.add(go);
         } else {
             gameObjects.add(go);

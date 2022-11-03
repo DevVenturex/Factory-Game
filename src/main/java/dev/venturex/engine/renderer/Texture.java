@@ -10,8 +10,8 @@ import static org.lwjgl.stb.STBImage.*;
 
 public class Texture {
 
-    private int texId;
-    private String filepath;
+    private final int texId;
+    private final String filepath;
     private int width, height;
 
     public Texture(String filepath) {
@@ -39,7 +39,6 @@ public class Texture {
         ByteBuffer image = stbi_load(filepath, width, height, channels, 0);
 
 
-
         if (image != null) {
             this.width = width.get(0);
             this.height = height.get(0);
@@ -59,11 +58,11 @@ public class Texture {
         stbi_image_free(image);
     }
 
-    public void bind(){
+    public void bind() {
         glBindTexture(GL_TEXTURE_2D, texId);
     }
 
-    public void unbind(){
+    public void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

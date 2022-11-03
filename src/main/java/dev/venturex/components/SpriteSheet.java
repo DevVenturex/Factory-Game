@@ -8,8 +8,8 @@ import java.util.List;
 
 public class SpriteSheet {
 
-    private Texture texture;
-    private List<Sprite> sprites;
+    private final Texture texture;
+    private final List<Sprite> sprites;
 
     public SpriteSheet(Texture texture, int spriteWidth, int spriteHeight, int numSprites, int spaceX, int spaceY) {
         this.texture = texture;
@@ -17,10 +17,10 @@ public class SpriteSheet {
         int currentX = 0;
         int currentY = texture.getHeight() - spriteHeight;
         for (int i = 0; i < numSprites; i++) {
-            float topY = (currentY + spriteHeight) / (float)texture.getHeight();
-            float rightX = (currentX + spriteWidth) / (float)texture.getWidth();
-            float leftX = currentX / (float)texture.getWidth();
-            float bottomY = currentY / (float)texture.getHeight();
+            float topY = (currentY + spriteHeight) / (float) texture.getHeight();
+            float rightX = (currentX + spriteWidth) / (float) texture.getWidth();
+            float leftX = currentX / (float) texture.getWidth();
+            float bottomY = currentY / (float) texture.getHeight();
 
             Vector2f[] texCoords = {
                     new Vector2f(rightX, topY),
@@ -32,14 +32,14 @@ public class SpriteSheet {
             this.sprites.add(sprite);
 
             currentX += spriteWidth + spaceX;
-            if (currentX >= texture.getWidth()){
+            if (currentX >= texture.getWidth()) {
                 currentX = 0;
                 currentY -= spriteHeight + spaceY;
             }
         }
     }
 
-    public Sprite getSprite(int index){
+    public Sprite getSprite(int index) {
         return this.sprites.get(index);
     }
 }
