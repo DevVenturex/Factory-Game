@@ -5,9 +5,9 @@ import java.util.List;
 
 public class GameObject {
 
-    private final String name;
-    private final List<Component> components;
-    private final int zIndex;
+    private String name;
+    private List<Component> components;
+    private int zIndex;
     public Transform transform;
 
     public GameObject(String name) {
@@ -67,6 +67,12 @@ public class GameObject {
     public void init() {
         for (int i = 0; i < components.size(); i++) {
             components.get(i).init();
+        }
+    }
+
+    public void imgui(){
+        for (Component c : components){
+            c.imgui();
         }
     }
 

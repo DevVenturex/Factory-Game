@@ -28,6 +28,8 @@ public class Window {
     private final String title;
     private long glfwWindow;
     private ImGuiLayer imGuiLayer;
+    private static int fps = 0;
+    private static float deltaTime = 0;
 
     private Window() {
         this.width = 1920;
@@ -41,6 +43,7 @@ public class Window {
 
     public static void changeToScene(Scene scene) {
         currentScene = scene;
+        currentScene.load();
         currentScene.init();
         currentScene.start();
     }
@@ -60,6 +63,8 @@ public class Window {
 
         init();
         loop();
+
+        currentScene.saveOnExit();
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(glfwWindow);
@@ -147,7 +152,7 @@ public class Window {
     private void loop() {
         float beginTime = (float) glfwGetTime();
         float endTime;
-        float deltaTime = -1f;
+        deltaTime = -1f;
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -157,12 +162,12 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             if (deltaTime >= 0) {
-                int fps = (int) (1 / deltaTime);
+                Window.get().fps = (int) (1 / deltaTime);
                 glfwSetWindowTitle(glfwWindow, title + " || FPS: " + fps);
                 currentScene.update(deltaTime);
             }
 
-            this.imGuiLayer.update(deltaTime);
+            this.imGuiLayer.update(deltaTime, currentScene);
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
 
@@ -182,5 +187,13 @@ public class Window {
 
     public static int getHeight() {
         return get().height;
+    }
+
+    public static int getFps() {
+        return fps;
+    }
+
+    public static float getDeltaTime() {
+        return deltaTime;
     }
 }

@@ -10,11 +10,11 @@ import static org.lwjgl.stb.STBImage.*;
 
 public class Texture {
 
-    private final int texId;
-    private final String filepath;
+    private int texId;
+    private String filepath;
     private int width, height;
 
-    public Texture(String filepath) {
+    public void init(String filepath){
         this.filepath = filepath;
 
 

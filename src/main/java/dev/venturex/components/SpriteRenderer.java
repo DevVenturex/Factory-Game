@@ -3,34 +3,35 @@ package dev.venturex.components;
 import dev.venturex.engine.Component;
 import dev.venturex.engine.Transform;
 import dev.venturex.engine.renderer.Texture;
+import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 public class SpriteRenderer extends Component {
 
-    Vector4f color;
-    private Sprite sprite;
+    Vector4f color = new Vector4f(1, 1, 1, 1);
+    private Sprite sprite = new Sprite();
 
-    private Transform lastTransform;
-    private boolean isDirty = false;
+    private transient Transform lastTransform;
+    private transient boolean isDirty = true;
 
-    public SpriteRenderer(Vector4f color) {
-        this.color = color;
-        this.sprite = new Sprite(null);
-        isDirty = true;
-    }
-
-    public SpriteRenderer(Vector4f color, Sprite sprite) {
-        this.color = color;
-        this.sprite = sprite;
-        isDirty = true;
-    }
-
-    public SpriteRenderer(Sprite sprite) {
-        this.color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.sprite = sprite;
-        isDirty = true;
-    }
+//    public SpriteRenderer(Vector4f color) {
+//        this.color = color;
+//        this.sprite = new Sprite(null);
+//        isDirty = true;
+//    }
+//
+//    public SpriteRenderer(Vector4f color, Sprite sprite) {
+//        this.color = color;
+//        this.sprite = sprite;
+//        isDirty = true;
+//    }
+//
+//    public SpriteRenderer(Sprite sprite) {
+//        this.color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+//        this.sprite = sprite;
+//        isDirty = true;
+//    }
 
     @Override
     public void init() {
@@ -42,6 +43,15 @@ public class SpriteRenderer extends Component {
         if (!this.lastTransform.equals(this.gameObject.transform)) {
             this.gameObject.transform.copy(this.lastTransform);
             isDirty = true;
+        }
+    }
+
+    @Override
+    public void imgui() {
+        float[] imColor = {color.x, color.y, color.z, color.w};
+        if (ImGui.colorPicker4("Color Picker:", imColor)) {
+            this.color.set(imColor[0], imColor[1], imColor[2], imColor[3]);
+            this.isDirty = true;
         }
     }
 
